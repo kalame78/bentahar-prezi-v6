@@ -82,7 +82,7 @@
         .mode-btn { background: #f39c12; color: #fff; box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3); }
         .theme-btn:hover, .mode-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
 
-        /* --- MENU LATÉRAL (DRAWER) --- */
+        /* --- MENU LATÉRAL BURGER --- */
         .menu-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.5); z-index: 999;
@@ -101,7 +101,7 @@
         .close-menu { position: absolute; top: 20px; right: 20px; background: transparent; border: none; font-size: 1.5em; color: var(--text-muted); cursor: pointer; }
         .side-menu select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--box-border); background: var(--box-bg); color: var(--text-color); font-size: 1em; cursor: pointer; }
 
-        /* --- CONTENEUR PRINCIPAL --- */
+        /* --- CONTENEURS & VUES --- */
         .container {
             background: var(--container-bg); padding: 25px; border-radius: 16px;
             box-shadow: var(--shadow); width: 100%; max-width: 1000px;
@@ -114,29 +114,20 @@
         .player-box { width: 100%; }
         .player-title { font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         
-        /* 🚨 FIX: ASPECT-RATIO 16:9 STRICT POUR AUCUN ROGNAGE 🚨 */
         .video-container {
-            position: relative; 
-            width: 100%; 
-            aspect-ratio: 16 / 9; /* Verrouille le format rectangulaire parfait */
-            background: #000; 
-            border-radius: 10px; 
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-            pointer-events: none; 
+            position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 strict */
+            background: #000; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); pointer-events: none; 
         }
         .video-container iframe, .video-container div {
-            position: absolute; top: 0; left: 0; 
-            width: 100% !important; height: 100% !important; 
-            border: 0; margin: 0; padding: 0;
-            transform: none !important; /* Empêche tout zoom parasite */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
         }
 
         /* --- ACTIONS & VERSETS --- */
         .controls-info { background: var(--box-bg); border: 1px solid var(--box-border); padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; text-align: center; width: 100%; box-sizing: border-box; }
         .action-row { display: flex; flex-wrap: wrap; gap: 15px; width: 100%; margin-bottom: 20px; align-items: center; }
         .range-box { background: var(--box-bg); border: 1px solid var(--box-border); padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; flex: 1; flex-wrap: wrap; justify-content: center; }
-        .range-box select { padding: 5px; border-radius: 4px; border: 1px solid var(--box-border); background: var(--container-bg); color: var(--text-color); }
+        .range-box select { padding: 5px; border-radius: 4px; border: 1px solid var(--box-border); background: var(--container-bg); color: var(--text-color); font-weight: 600;}
         
         .btn { padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; display: flex; align-items: center; gap: 8px; transition: 0.2s;}
         .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
@@ -151,7 +142,7 @@
 
         /* --- ESPACE PREZI --- */
         .recitation-header { text-align: center; margin-bottom: 20px; }
-        .prezi-wrapper { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .prezi-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .prezi-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -159,31 +150,21 @@
         ::-webkit-scrollbar-thumb { background: #bdc3c7; border-radius: 10px; }
 
         /* ========================================= */
-        /* 📱 OPTIMISATION MOBILE (LIVE INSTA + 16:9) */
+        /* 📱 MOBILE : LIVE INSTA + 16:9 PRÉSERVÉ    */
         /* ========================================= */
         @media (max-width: 768px) {
             .app-header { flex-direction: column; gap: 15px; }
             .header-left { width: 100%; justify-content: space-between; }
             
-            /* Le cadre noir global style Live Insta */
             .players-grid { 
-                grid-template-columns: 1fr; 
-                gap: 2px; /* Séparateur fin au milieu */
-                background: #000; 
-                padding: 2px;
-                border-radius: 12px;
+                display: flex; flex-direction: column; gap: 2px; background: #000;
+                padding: 4px; border-radius: 16px;
             }
-            .player-title { display: none; } /* On cache les titres */
+            .player-title { display: none; }
             
-            /* Les vidéos gardent leur format rectangle (pas de zoom, pas de coupure) */
-            .video-container {
-                border-radius: 0;
-                aspect-ratio: 16 / 9; /* GARANTIT LE RECTANGLE PARFAIT */
-            }
-            
-            /* On arrondit uniquement les angles extérieurs du bloc empilé */
-            .player-box:first-child .video-container { border-radius: 10px 10px 0 0; }
-            .player-box:last-child .video-container { border-radius: 0 0 10px 10px; }
+            .video-container { border-radius: 12px; }
+            .player-box:first-child .video-container { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+            .player-box:last-child .video-container { border-top-left-radius: 0; border-top-right-radius: 0; }
             
             .action-row { flex-direction: column; align-items: stretch; }
             .range-box, .btn { width: 100%; }
@@ -196,13 +177,13 @@
     <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
     <div class="side-menu" id="sideMenu">
         <button class="close-menu" onclick="toggleMenu()">✖</button>
-        <h3>⚙️ Paramètres</h3>
+        <h3>⚙ Paramètres</h3>
         
         <label style="color: var(--text-color); font-weight: bold;">📖 Changer de Sourate :</label>
         <select id="surahSelect" onchange="changeSurah(); toggleMenu();"></select>
         
         <div style="margin-top: 20px; font-size: 0.9em; color: var(--text-muted);">
-            Sélectionne la sourate de ton choix. L'interface se mettra à jour automatiquement avec les bonnes vidéos et les bons versets.
+            Sélectionne la sourate de ton choix. L'interface se mettra à jour automatiquement.
         </div>
     </div>
 
@@ -224,7 +205,6 @@
     <!-- VUE 1 : MÉMORISATION -->
     <div id="memorization-view" class="container">
         
-        <!-- Écrans empilés (Live Insta) mais STRICTEMENT en 16:9 -->
         <div class="players-grid">
             <div class="player-box">
                 <div class="player-title">👤 1. Récitation du Sheikh</div>
@@ -299,7 +279,7 @@
             }
         }
 
-        // --- DONNÉES ---
+        // --- DONNÉES SOURATES ---
         const databaseSourates = [
             {
                 id: "al-mutaffifin", nom: "Sourate 83 - Al-Mutaffifin",
@@ -357,15 +337,28 @@
         function generateVerseUI() {
             const grid = document.getElementById('versesGrid'), start = document.getElementById('startVerseSelect'), end = document.getElementById('endVerseSelect');
             grid.innerHTML = ''; start.innerHTML = ''; end.innerHTML = '';
-            const max = databaseSourates[currentSurahIndex].preziMarks.length;
+            
+            // CORRECTION IMPORTANTE : Le dernier repère est la FIN de la sourate, pas un bouton.
+            // On génère donc "length - 1" boutons.
+            const totalButtons = databaseSourates[currentSurahIndex].preziMarks.length - 1; 
 
-            for (let i = 0; i < max; i++) {
+            for (let i = 0; i < totalButtons; i++) {
                 const btn = document.createElement('button');
-                btn.className = 'verse-btn'; btn.innerText = `V${i + 1}`; btn.onclick = () => playVerse(i); grid.appendChild(btn);
-                const optS = document.createElement('option'); optS.value = i; optS.innerText = `V${i + 1}`; start.appendChild(optS);
-                const optE = document.createElement('option'); optE.value = i; optE.innerText = `V${i + 1}`; end.appendChild(optE);
+                btn.className = 'verse-btn'; 
+                btn.innerText = i === 0 ? "V0" : `V${i}`; 
+                btn.onclick = () => playVerse(i); grid.appendChild(btn);
+                
+                const optS = document.createElement('option'); 
+                optS.value = i; 
+                optS.innerText = i === 0 ? "V0 (Basmala)" : `V${i}`; 
+                start.appendChild(optS);
+                
+                const optE = document.createElement('option'); 
+                optE.value = i; 
+                optE.innerText = i === 0 ? "V0 (Basmala)" : `V${i}`; 
+                end.appendChild(optE);
             }
-            if (max > 0) end.value = max - 1;
+            if (totalButtons > 0) end.value = totalButtons - 1;
         }
 
         function playVerse(i) { executeSyncPlayback(i, i); }
@@ -387,12 +380,19 @@
         function executeSyncPlayback(startIndex, endIndex) {
             if (!playerSheikh || !playerPrezi || typeof playerSheikh.seekTo !== 'function') return alert("Vidéos en chargement...");
             const cur = databaseSourates[currentSurahIndex];
-            const stS = cur.sheikhMarks[startIndex] || 0, stP = cur.preziMarks[startIndex];
-            const enS = (endIndex < cur.sheikhMarks.length - 1) ? cur.sheikhMarks[endIndex + 1] : stS + 15;
-            const enP = (endIndex < cur.preziMarks.length - 1) ? cur.preziMarks[endIndex + 1] : stP + 15;
+            
+            const stS = cur.sheikhMarks[startIndex] || 0;
+            const stP = cur.preziMarks[startIndex];
+            
+            // Le dernier repère de l'array est maintenant utilisé intelligemment pour borner le dernier verset
+            const enS = (endIndex + 1 < cur.sheikhMarks.length) ? cur.sheikhMarks[endIndex + 1] : stS + 15;
+            const enP = (endIndex + 1 < cur.preziMarks.length) ? cur.preziMarks[endIndex + 1] : stP + 15;
 
             document.querySelectorAll('.verse-btn').forEach((b, i) => { if (i >= startIndex && i <= endIndex) b.classList.add('active'); else b.classList.remove('active'); });
-            document.getElementById('status-info').innerHTML = startIndex === endIndex ? `🔄 Boucle active sur le <b>Verset ${startIndex + 1}</b>` : `🔄 Boucle active : <b>V${startIndex + 1} à V${endIndex + 1}</b>`;
+            
+            document.getElementById('status-info').innerHTML = startIndex === endIndex 
+                ? `🔄 Boucle active sur le <b>V${startIndex}</b>` 
+                : `🔄 Boucle active : <b>V${startIndex} à V${endIndex}</b>`;
 
             playerSheikh.seekTo(stS, true); playerSheikh.playVideo();
             playerPrezi.seekTo(stP, true); playerPrezi.playVideo();
