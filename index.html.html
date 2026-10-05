@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outil Élève - Mémorisation Interactive</title>
+    <style>
+        /* --- VARIABLES DE THÈME --- */
+        :root {
+            --bg-color: #f4f7f6;
+            --text-color: #2c3e50;
+            --text-muted: #7f8c8d;
+            --container-bg: #ffffff;
+            --box-bg: #eef2f3;
+            --box-border: #dcdde1;
+            --btn-verse-bg: #3498db;
+            --btn-verse-hover: #2980b9;
+            --btn-verse-active: #e74c3c;
+            --grid-bg: #fafafa;
+            --shadow: 0 8px 20px rgba(0,0,0,0.08);
+            --header-border: #ecf0f1;
+            --menu-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #ecf0f1;
+            --text-muted: #bdc3c7;
+            --container-bg: #1e1e1e;
+            --box-bg: #2c3e50;
+            --box-border: #34495e;
+            --btn-verse-bg: #20638f;
+            --btn-verse-hover: #154360;
+            --btn-verse-active: #c0392b;
+            --grid-bg: #181818;
+            --shadow: 0 8px 20px rgba(0,0,0,0.6);
+            --header-border: #2c3e50;
+            --menu-bg: #1e1e1e;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden; /* Empêche le scroll horizontal avec le menu */
+        }
+
+        /* --- EN-TÊTE & MENU BURGER --- */
+        .app-header {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--header-border);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .burger-btn {
+            background: var(--btn-verse-bg);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 45px;
+            height: 45px;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            transition: transform 0.2s;
+        }
+        .burger-btn:hover { transform: scale(1.05); }
+
+        .titles h1 { margin: 0 0 2px 0; font-size: 1.6em; }
+        .titles .subtitle { color: var(--text-muted); font-size: 1em; margin: 0; }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .theme-btn, .mode-btn {
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .theme-btn {
+            background: var(--box-bg); color: var(--text-color);
+            border: 1px solid var(--box-border);
+        }
+        .mode-btn {
+            background: #f39c12; color: #fff;
+            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+        }
+        .theme-btn:hover, .mode-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        /* --- MENU LATÉRAL (DRAWER) --- */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.5); z-index: 999;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .menu-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .side-menu {
+            position: fixed; top: 0; left: -320px; width: 300px; height: 100vh;
+            background: var(--menu-bg); box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+            z-index: 1000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 25px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;
+        }
+        .side-menu.active { left: 0; }
+
+        .side-menu h3 { margin: 0; font-size: 1.4em; color: var(--text-color); border-bottom: 2px solid var(--box-border); padding-bottom: 10px;}
+        .close-menu {
+            position: absolute; top: 20px; right: 20px;
+            background: transparent; border: none; font-size: 1.5em;
+            color: var(--text-muted); cursor: pointer;
+        }
+
+        .side-menu select {
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--box-border);
+            background: var(--box-bg); color: var(--text-color); font-size: 1em; cursor: pointer;
+        }
+
+        /* --- CONTENEUR PRINCIPAL --- */
+        .container {
+            background: var(--container-bg); padding: 25px; border-radius: 16px;
+            box-shadow: var(--shadow); width: 100%; max-width: 1000px;
+            display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+        }
+        .view-hidden { display: none !important; }
+
+        /* --- GRILLE VIDÉOS (BUREAU) --- */
+        .players-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; margin-bottom: 20px; }
+        .player-box { width: 100%; }
+        .player-title { font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        
+        .video-container {
+            position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 par défaut */
+            background: #000; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); pointer-events: none; 
+        }
+        .video-container iframe, .video-container div {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        }
+
+        /* --- ACTIONS & VERSETS --- */
+        .controls-info {
+            background: var(--box-bg); border: 1px solid var(--box-border); padding: 12px 20px;
+            border-radius: 8px; margin-bottom: 20px; font-weight: 500; text-align: center; width: 100%; box-sizing: border-box;
+        }
+        .action-row { display: flex; flex-wrap: wrap; gap: 15px; width: 100%; margin-bottom: 20px; align-items: center; }
+        .range-box {
+            background: var(--box-bg); border: 1px solid var(--box-border); padding: 10px 15px;
+            border-radius: 8px; display: flex; align-items: center; gap: 10px; flex: 1; flex-wrap: wrap; justify-content: center;
+        }
+        .range-box select { padding: 5px; border-radius: 4px; border: 1px solid var(--box-border); background: var(--container-bg); color: var(--text-color); }
+        
+        .btn { padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; display: flex; align-items: center; gap: 8px; transition: 0.2s;}
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn-range { background: #27ae60; color: #fff; }
+        .btn-play-all { background: #8e44ad; color: #fff; flex: 1; justify-content: center; }
+        .btn-stop { background: #e74c3c; color: #fff; justify-content: center; }
+
+        .verses-grid-container {
+            width: 100%; max-height: 250px; overflow-y: auto; border: 1px solid var(--box-border);
+            border-radius: 10px; padding: 15px; background: var(--grid-bg); box-sizing: border-box;
+        }
+        .verses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
+        .verse-btn {
+            background-color: var(--btn-verse-bg); color: white; border: none; padding: 12px 5px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center;
+        }
+        .verse-btn.active { background-color: var(--btn-verse-active); box-shadow: 0 0 10px var(--btn-verse-active); transform: scale(1.05); }
+
+        /* --- ESPACE PREZI --- */
+        .recitation-header { text-align: center; margin-bottom: 20px; }
+        .prezi-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .prezi-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+        /* scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #bdc3c7; border-radius: 10px; }
+
+        /* ========================================= */
+        /* 📱 OPTIMISATION MOBILE EXTRÊME (IG LIVE)  */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            .app-header { flex-direction: column; gap: 15px; }
+            .header-left { width: 100%; justify-content: space-between; }
+            
+            /* L'effet Instagram Live : Écrans empilés, flush, et carrés (1:1) */
+            .players-grid { 
+                grid-template-columns: 1fr; 
+                gap: 2px; /* Séparation fine */
+                background: #000; 
+                padding: 2px;
+                border-radius: 12px;
+            }
+            .player-title { display: none; } /* On cache les titres pour 100% d'immersion */
+            
+            .video-container {
+                padding-bottom: 100%; /* Cadrage CARRÉ (1:1) */
+                border-radius: 0;
+            }
+            
+            /* Bords arrondis pour le bloc global */
+            .player-box:first-child .video-container { border-radius: 10px 10px 0 0; }
+            .player-box:last-child .video-container { border-radius: 0 0 10px 10px; }
+            
+            /* L'astuce CSS pour zoomer le 16:9 au centre du carré sans écraser l'image */
+            .video-container iframe, .video-container div {
+                width: 177.77% !important; /* 16/9 * 100% */
+                left: -38.88% !important; /* Recentrage parfait */
+            }
+
+            .action-row { flex-direction: column; align-items: stretch; }
+            .range-box, .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY ET MENU LATÉRAL BURGER -->
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    <div class="side-menu" id="sideMenu">
+        <button class="close-menu" onclick="toggleMenu()">✖</button>
+        <h3>⚙️ Paramètres</h3>
+        
+        <label style="color: var(--text-color); font-weight: bold;">📖 Changer de Sourate :</label>
+        <select id="surahSelect" onchange="changeSurah(); toggleMenu();"></select>
+        
+        <div style="margin-top: 20px; font-size: 0.9em; color: var(--text-muted);">
+            Sélectionne la sourate de ton choix. L'interface se mettra à jour automatiquement avec les bonnes vidéos et les bons versets.
+        </div>
+    </div>
+
+    <!-- EN-TÊTE -->
+    <div class="app-header">
+        <div class="header-left">
+            <button class="burger-btn" onclick="toggleMenu()">☰</button>
+            <div class="titles">
+                <h1>Outil Élève</h1>
+                <div class="subtitle">Mémorisation & Récitation</div>
+            </div>
+        </div>
+        <div class="header-buttons">
+            <button class="mode-btn" onclick="toggleAppMode()" id="modeBtn">🎤 À toi de réciter</button>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Mode Sombre</button>
+        </div>
+    </div>
+
+    <!-- VUE 1 : MÉMORISATION -->
+    <div id="memorization-view" class="container">
+        
+        <!-- Écrans "Live Insta" sur Mobile -->
+        <div class="players-grid">
+            <div class="player-box">
+                <div class="player-title">👤 1. Récitation du Sheikh</div>
+                <div class="video-container"><div id="player-sheikh"></div></div>
+            </div>
+            <div class="player-box">
+                <div class="player-title">🗺️ 2. Mind Map Prezi</div>
+                <div class="video-container"><div id="player-prezi"></div></div>
+            </div>
+        </div>
+
+        <div class="controls-info" id="status-info">⏳ Chargement des lecteurs YouTube en cours...</div>
+
+        <div class="action-row">
+            <div class="range-box">
+                <label>Plage : Du</label>
+                <select id="startVerseSelect"></select>
+                <label>au</label>
+                <select id="endVerseSelect"></select>
+                <button class="btn btn-range" onclick="playRange()">🔄 Boucler</button>
+            </div>
+            <button class="btn btn-play-all" onclick="playWholeSurah()">▶️ Lire tout</button>
+            <button class="btn btn-stop" onclick="stopLoops()">⏹️ Arrêter</button>
+        </div>
+
+        <div class="verses-grid-container">
+            <div class="verses-grid" id="versesGrid"></div>
+        </div>
+    </div>
+
+    <!-- VUE 2 : RÉCITATION LIBRE (PREZI) -->
+    <div id="recitation-view" class="container view-hidden">
+        <div class="recitation-header">
+            <h2>🎤 À ton tour !</h2>
+            <p>Fais défiler la carte mentale à ton rythme.</p>
+        </div>
+        <div class="prezi-wrapper">
+            <iframe src="https://prezi.com/p/embed/kaZIGlMTbDV8kXgTAJTs/" id="iframe_container" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" allow="autoplay; fullscreen"></iframe>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        // --- GESTION DU MENU BURGER ---
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('menuOverlay');
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // --- GESTION DES VUES ---
+        let isRecitationMode = false;
+        function toggleAppMode() {
+            const memView = document.getElementById('memorization-view');
+            const recView = document.getElementById('recitation-view');
+            const modeBtn = document.getElementById('modeBtn');
+
+            isRecitationMode = !isRecitationMode;
+
+            if (isRecitationMode) {
+                stopLoops(); 
+                memView.classList.add('view-hidden');
+                recView.classList.remove('view-hidden');
+                modeBtn.innerHTML = '🔙 Retour Mémorisation';
+                modeBtn.style.background = '#3498db'; 
+            } else {
+                recView.classList.add('view-hidden');
+                memView.classList.remove('view-hidden');
+                modeBtn.innerHTML = '🎤 À toi de réciter';
+                modeBtn.style.background = '#f39c12'; 
+            }
+        }
+
+        // --- DONNÉES ---
+        const databaseSourates = [
+            {
+                id: "al-mutaffifin", nom: "Sourate 83 - Al-Mutaffifin",
+                sheikhSrc: "2xieYdQn-eU",
+                sheikhMarks: [0, 13, 18.3, 26.9, 34.4, 44.6, 48.2, 56.2, 66.5, 72.7, 77.5, 84.2, 91.1, 101, 111.5, 121.9, 132.7, 140.3, 151.1, 161.2, 168, 172.7, 178, 184.6, 190.8, 198, 204.4, 215.2, 220.7, 227.5, 238.5, 244.8, 256, 270.2, 277.4, 285.7, 292.2, 301.4],
+                preziSrc: "QABnLZl-f1Y",
+                preziMarks: [0, 12.6, 17.9, 26.7, 34.1, 44.6, 48.2, 56.2, 66.5, 72.7, 77.5, 84.2, 91.1, 101, 111.5, 121.9, 132.7, 140.3, 151.1, 161.2, 168, 172.7, 178, 184.6, 190.8, 198, 204.4, 215.2, 220.7, 227.5, 238.5, 244.8, 256, 270.2, 277.4, 285.7, 292.2, 301.4]
+            }
+        ];
+
+        let playerSheikh, playerPrezi, loopInterval = null, currentSurahIndex = 0, apiLoaded = false;
+
+        document.addEventListener("DOMContentLoaded", () => { initSurahDropdown(); });
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeBtn');
+            if (html.getAttribute('data-theme') === 'light') {
+                html.setAttribute('data-theme', 'dark'); btn.innerHTML = '☀️️ Mode Clair';
+            } else {
+                html.setAttribute('data-theme', 'light'); btn.innerHTML = '🌙 Mode Sombre';
+            }
+        }
+
+        function initSurahDropdown() {
+            const select = document.getElementById('surahSelect');
+            select.innerHTML = '';
+            databaseSourates.forEach((surah, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx; opt.innerText = surah.nom; select.appendChild(opt);
+            });
+            generateVerseUI();
+        }
+
+        function changeSurah() {
+            currentSurahIndex = parseInt(document.getElementById('surahSelect').value);
+            stopLoops(); generateVerseUI();
+            if (apiLoaded) {
+                playerSheikh.loadVideoById(databaseSourates[currentSurahIndex].sheikhSrc);
+                playerPrezi.loadVideoById(databaseSourates[currentSurahIndex].preziSrc);
+            }
+        }
+
+        function onYouTubeIframeAPIReady() {
+            apiLoaded = true;
+            const currentSurah = databaseSourates[currentSurahIndex];
+            const vars = { 'playsinline': 1, 'rel': 0, 'controls': 0, 'modestbranding': 1, 'disablekb': 1, 'iv_load_policy': 3 };
+
+            playerSheikh = new YT.Player('player-sheikh', { height: '100%', width: '100%', videoId: currentSurah.sheikhSrc, playerVars: vars, events: { 'onReady': checkReady } });
+            playerPrezi = new YT.Player('player-prezi', { height: '100%', width: '100%', videoId: currentSurah.preziSrc, playerVars: vars, events: { 'onReady': checkReady } });
+        }
+
+        function checkReady() { document.getElementById('status-info').innerHTML = "✅ Lecteurs prêts ! Lance un verset, une plage, ou toute la sourate."; }
+
+        function generateVerseUI() {
+            const grid = document.getElementById('versesGrid'), start = document.getElementById('startVerseSelect'), end = document.getElementById('endVerseSelect');
+            grid.innerHTML = ''; start.innerHTML = ''; end.innerHTML = '';
+            const max = databaseSourates[currentSurahIndex].preziMarks.length;
+
+            for (let i = 0; i < max; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'verse-btn'; btn.innerText = `V${i + 1}`; btn.onclick = () => playVerse(i); grid.appendChild(btn);
+                const optS = document.createElement('option'); optS.value = i; optS.innerText = `V${i + 1}`; start.appendChild(optS);
+                const optE = document.createElement('option'); optE.value = i; optE.innerText = `V${i + 1}`; end.appendChild(optE);
+            }
+            if (max > 0) end.value = max - 1;
+        }
+
+        function playVerse(i) { executeSyncPlayback(i, i); }
+        function playRange() {
+            const s = parseInt(document.getElementById('startVerseSelect').value), e = parseInt(document.getElementById('endVerseSelect').value);
+            if (s > e) return alert("Le verset de début doit être avant le verset de fin !");
+            executeSyncPlayback(s, e);
+        }
+
+        function playWholeSurah() {
+            if (!playerSheikh || !playerPrezi || typeof playerSheikh.seekTo !== 'function') return;
+            if (loopInterval) { clearInterval(loopInterval); loopInterval = null; }
+            playerSheikh.seekTo(0, true); playerSheikh.playVideo();
+            playerPrezi.seekTo(0, true); playerPrezi.playVideo();
+            document.querySelectorAll('.verse-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('status-info').innerHTML = "▶️ <b>Lecture continue...</b>";
+        }
+
+        function executeSyncPlayback(startIndex, endIndex) {
+            if (!playerSheikh || !playerPrezi || typeof playerSheikh.seekTo !== 'function') return alert("Vidéos en chargement...");
+            const cur = databaseSourates[currentSurahIndex];
+            const stS = cur.sheikhMarks[startIndex] || 0, stP = cur.preziMarks[startIndex];
+            const enS = (endIndex < cur.sheikhMarks.length - 1) ? cur.sheikhMarks[endIndex + 1] : stS + 15;
+            const enP = (endIndex < cur.preziMarks.length - 1) ? cur.preziMarks[endIndex + 1] : stP + 15;
+
+            document.querySelectorAll('.verse-btn').forEach((b, i) => { if (i >= startIndex && i <= endIndex) b.classList.add('active'); else b.classList.remove('active'); });
+            document.getElementById('status-info').innerHTML = startIndex === endIndex ? `🔄 Boucle active sur le <b>Verset ${startIndex + 1}</b>` : `🔄 Boucle active : <b>V${startIndex + 1} à V${endIndex + 1}</b>`;
+
+            playerSheikh.seekTo(stS, true); playerSheikh.playVideo();
+            playerPrezi.seekTo(stP, true); playerPrezi.playVideo();
+
+            if (loopInterval) clearInterval(loopInterval);
+            loopInterval = setInterval(() => {
+                if (playerSheikh.getCurrentTime() >= enS || playerSheikh.getCurrentTime() < stS) playerSheikh.seekTo(stS, true);
+                if (playerPrezi.getCurrentTime() >= enP || playerPrezi.getCurrentTime() < stP) playerPrezi.seekTo(stP, true);
+            }, 150);
+        }
+
+        function stopLoops() {
+            if (loopInterval) { clearInterval(loopInterval); loopInterval = null; }
+            if (playerSheikh && typeof playerSheikh.pauseVideo === 'function') playerSheikh.pauseVideo();
+            if (playerPrezi && typeof playerPrezi.pauseVideo === 'function') playerPrezi.pauseVideo();
+            document.querySelectorAll('.verse-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('status-info').innerHTML = "⏹️ Lecture arrêtée.";
+        }
+    </script>
+</body>
+</html>
