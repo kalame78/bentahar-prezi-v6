@@ -150,24 +150,30 @@
         ::-webkit-scrollbar-thumb { background: #bdc3c7; border-radius: 10px; }
 
         /* ========================================= */
-        /* 📱 MOBILE : LIVE INSTA + 16:9 PRÉSERVÉ    */
+        /* 📱 MOBILE : ÉLARGISSEMENT MAXIMAL         */
         /* ========================================= */
         @media (max-width: 768px) {
+            /* On réduit les marges globales pour donner tout l'espace aux vidéos */
+            body { padding: 10px; } 
+            .container { padding: 15px 10px; }
+
             .app-header { flex-direction: column; gap: 15px; }
             .header-left { width: 100%; justify-content: space-between; }
             
             .players-grid { 
                 display: flex; flex-direction: column; gap: 2px; background: #000;
-                padding: 4px; border-radius: 16px;
+                padding: 2px; /* Cadre plus fin */
+                border-radius: 12px;
+                margin-bottom: 15px;
             }
             .player-title { display: none; }
             
-            .video-container { border-radius: 12px; }
+            .video-container { border-radius: 10px; }
             .player-box:first-child .video-container { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
             .player-box:last-child .video-container { border-top-left-radius: 0; border-top-right-radius: 0; }
             
-            .action-row { flex-direction: column; align-items: stretch; }
-            .range-box, .btn { width: 100%; }
+            .action-row { flex-direction: column; align-items: stretch; gap: 10px; }
+            .range-box, .btn { width: 100%; box-sizing: border-box; }
         }
     </style>
 </head>
@@ -226,7 +232,7 @@
                 <select id="endVerseSelect"></select>
                 <button class="btn btn-range" onclick="playRange()">🔄 Boucler</button>
             </div>
-            <button class="btn btn-play-all" onclick="playWholeSurah()">▶️ Lire tout</button>
+            <button class="btn btn-play-all" onclick="playWholeSurah()">▶️️ Lire tout</button>
             <button class="btn btn-stop" onclick="stopLoops()">⏹️ Arrêter</button>
         </div>
 
@@ -248,7 +254,6 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // --- GESTION DU MENU BURGER ---
         function toggleMenu() {
             const menu = document.getElementById('sideMenu');
             const overlay = document.getElementById('menuOverlay');
@@ -256,13 +261,11 @@
             overlay.classList.toggle('active');
         }
 
-        // --- GESTION DES VUES ---
         let isRecitationMode = false;
         function toggleAppMode() {
             const memView = document.getElementById('memorization-view');
             const recView = document.getElementById('recitation-view');
             const modeBtn = document.getElementById('modeBtn');
-
             isRecitationMode = !isRecitationMode;
 
             if (isRecitationMode) {
@@ -279,7 +282,6 @@
             }
         }
 
-        // --- DONNÉES SOURATES ---
         const databaseSourates = [
             {
                 id: "al-mutaffifin", nom: "Sourate 83 - Al-Mutaffifin",
@@ -338,8 +340,6 @@
             const grid = document.getElementById('versesGrid'), start = document.getElementById('startVerseSelect'), end = document.getElementById('endVerseSelect');
             grid.innerHTML = ''; start.innerHTML = ''; end.innerHTML = '';
             
-            // CORRECTION IMPORTANTE : Le dernier repère est la FIN de la sourate, pas un bouton.
-            // On génère donc "length - 1" boutons.
             const totalButtons = databaseSourates[currentSurahIndex].preziMarks.length - 1; 
 
             for (let i = 0; i < totalButtons; i++) {
@@ -384,7 +384,6 @@
             const stS = cur.sheikhMarks[startIndex] || 0;
             const stP = cur.preziMarks[startIndex];
             
-            // Le dernier repère de l'array est maintenant utilisé intelligemment pour borner le dernier verset
             const enS = (endIndex + 1 < cur.sheikhMarks.length) ? cur.sheikhMarks[endIndex + 1] : stS + 15;
             const enP = (endIndex + 1 < cur.preziMarks.length) ? cur.preziMarks[endIndex + 1] : stP + 15;
 
@@ -409,7 +408,7 @@
             if (playerSheikh && typeof playerSheikh.pauseVideo === 'function') playerSheikh.pauseVideo();
             if (playerPrezi && typeof playerPrezi.pauseVideo === 'function') playerPrezi.pauseVideo();
             document.querySelectorAll('.verse-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('status-info').innerHTML = "⏹️ Lecture arrêtée.";
+            document.getElementById('status-info').innerHTML = "⏹️️ Lecture arrêtée.";
         }
     </script>
 </body>
