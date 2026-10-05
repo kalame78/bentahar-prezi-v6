@@ -48,40 +48,22 @@
             flex-direction: column;
             align-items: center;
             transition: background-color 0.4s ease, color 0.4s ease;
-            overflow-x: hidden; /* Empêche le scroll horizontal avec le menu */
+            overflow-x: hidden;
         }
 
         /* --- EN-TÊTE & MENU BURGER --- */
         .app-header {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            width: 100%; max-width: 1000px; display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 20px; padding-bottom: 10px;
             border-bottom: 2px solid var(--header-border);
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
 
         .burger-btn {
-            background: var(--btn-verse-bg);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            width: 45px;
-            height: 45px;
-            font-size: 1.5em;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            background: var(--btn-verse-bg); color: white; border: none; border-radius: 8px;
+            width: 45px; height: 45px; font-size: 1.5em; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
             transition: transform 0.2s;
         }
         .burger-btn:hover { transform: scale(1.05); }
@@ -89,33 +71,15 @@
         .titles h1 { margin: 0 0 2px 0; font-size: 1.6em; }
         .titles .subtitle { color: var(--text-muted); font-size: 1em; margin: 0; }
 
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        .header-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
 
         .theme-btn, .mode-btn {
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9em;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer;
+            font-weight: bold; font-size: 0.9em; transition: all 0.3s; display: flex; align-items: center; gap: 6px;
         }
         
-        .theme-btn {
-            background: var(--box-bg); color: var(--text-color);
-            border: 1px solid var(--box-border);
-        }
-        .mode-btn {
-            background: #f39c12; color: #fff;
-            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
-        }
+        .theme-btn { background: var(--box-bg); color: var(--text-color); border: 1px solid var(--box-border); }
+        .mode-btn { background: #f39c12; color: #fff; box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3); }
         .theme-btn:hover, .mode-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
 
         /* --- MENU LATÉRAL (DRAWER) --- */
@@ -133,18 +97,9 @@
             padding: 25px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;
         }
         .side-menu.active { left: 0; }
-
         .side-menu h3 { margin: 0; font-size: 1.4em; color: var(--text-color); border-bottom: 2px solid var(--box-border); padding-bottom: 10px;}
-        .close-menu {
-            position: absolute; top: 20px; right: 20px;
-            background: transparent; border: none; font-size: 1.5em;
-            color: var(--text-muted); cursor: pointer;
-        }
-
-        .side-menu select {
-            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--box-border);
-            background: var(--box-bg); color: var(--text-color); font-size: 1em; cursor: pointer;
-        }
+        .close-menu { position: absolute; top: 20px; right: 20px; background: transparent; border: none; font-size: 1.5em; color: var(--text-muted); cursor: pointer; }
+        .side-menu select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--box-border); background: var(--box-bg); color: var(--text-color); font-size: 1em; cursor: pointer; }
 
         /* --- CONTENEUR PRINCIPAL --- */
         .container {
@@ -159,25 +114,28 @@
         .player-box { width: 100%; }
         .player-title { font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         
+        /* 🚨 FIX: ASPECT-RATIO 16:9 STRICT POUR AUCUN ROGNAGE 🚨 */
         .video-container {
-            position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 par défaut */
-            background: #000; border-radius: 10px; overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); pointer-events: none; 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 16 / 9; /* Verrouille le format rectangulaire parfait */
+            background: #000; 
+            border-radius: 10px; 
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+            pointer-events: none; 
         }
         .video-container iframe, .video-container div {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+            position: absolute; top: 0; left: 0; 
+            width: 100% !important; height: 100% !important; 
+            border: 0; margin: 0; padding: 0;
+            transform: none !important; /* Empêche tout zoom parasite */
         }
 
         /* --- ACTIONS & VERSETS --- */
-        .controls-info {
-            background: var(--box-bg); border: 1px solid var(--box-border); padding: 12px 20px;
-            border-radius: 8px; margin-bottom: 20px; font-weight: 500; text-align: center; width: 100%; box-sizing: border-box;
-        }
+        .controls-info { background: var(--box-bg); border: 1px solid var(--box-border); padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; text-align: center; width: 100%; box-sizing: border-box; }
         .action-row { display: flex; flex-wrap: wrap; gap: 15px; width: 100%; margin-bottom: 20px; align-items: center; }
-        .range-box {
-            background: var(--box-bg); border: 1px solid var(--box-border); padding: 10px 15px;
-            border-radius: 8px; display: flex; align-items: center; gap: 10px; flex: 1; flex-wrap: wrap; justify-content: center;
-        }
+        .range-box { background: var(--box-bg); border: 1px solid var(--box-border); padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; flex: 1; flex-wrap: wrap; justify-content: center; }
         .range-box select { padding: 5px; border-radius: 4px; border: 1px solid var(--box-border); background: var(--container-bg); color: var(--text-color); }
         
         .btn { padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; display: flex; align-items: center; gap: 8px; transition: 0.2s;}
@@ -186,59 +144,47 @@
         .btn-play-all { background: #8e44ad; color: #fff; flex: 1; justify-content: center; }
         .btn-stop { background: #e74c3c; color: #fff; justify-content: center; }
 
-        .verses-grid-container {
-            width: 100%; max-height: 250px; overflow-y: auto; border: 1px solid var(--box-border);
-            border-radius: 10px; padding: 15px; background: var(--grid-bg); box-sizing: border-box;
-        }
+        .verses-grid-container { width: 100%; max-height: 250px; overflow-y: auto; border: 1px solid var(--box-border); border-radius: 10px; padding: 15px; background: var(--grid-bg); box-sizing: border-box; }
         .verses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
-        .verse-btn {
-            background-color: var(--btn-verse-bg); color: white; border: none; padding: 12px 5px;
-            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center;
-        }
+        .verse-btn { background-color: var(--btn-verse-bg); color: white; border: none; padding: 12px 5px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; }
         .verse-btn.active { background-color: var(--btn-verse-active); box-shadow: 0 0 10px var(--btn-verse-active); transform: scale(1.05); }
 
         /* --- ESPACE PREZI --- */
         .recitation-header { text-align: center; margin-bottom: 20px; }
-        .prezi-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .prezi-wrapper { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .prezi-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
-        /* scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #bdc3c7; border-radius: 10px; }
 
         /* ========================================= */
-        /* 📱 OPTIMISATION MOBILE EXTRÊME (IG LIVE)  */
+        /* 📱 OPTIMISATION MOBILE (LIVE INSTA + 16:9) */
         /* ========================================= */
         @media (max-width: 768px) {
             .app-header { flex-direction: column; gap: 15px; }
             .header-left { width: 100%; justify-content: space-between; }
             
-            /* L'effet Instagram Live : Écrans empilés, flush, et carrés (1:1) */
+            /* Le cadre noir global style Live Insta */
             .players-grid { 
                 grid-template-columns: 1fr; 
-                gap: 2px; /* Séparation fine */
+                gap: 2px; /* Séparateur fin au milieu */
                 background: #000; 
                 padding: 2px;
                 border-radius: 12px;
             }
-            .player-title { display: none; } /* On cache les titres pour 100% d'immersion */
+            .player-title { display: none; } /* On cache les titres */
             
+            /* Les vidéos gardent leur format rectangle (pas de zoom, pas de coupure) */
             .video-container {
-                padding-bottom: 100%; /* Cadrage CARRÉ (1:1) */
                 border-radius: 0;
+                aspect-ratio: 16 / 9; /* GARANTIT LE RECTANGLE PARFAIT */
             }
             
-            /* Bords arrondis pour le bloc global */
+            /* On arrondit uniquement les angles extérieurs du bloc empilé */
             .player-box:first-child .video-container { border-radius: 10px 10px 0 0; }
             .player-box:last-child .video-container { border-radius: 0 0 10px 10px; }
             
-            /* L'astuce CSS pour zoomer le 16:9 au centre du carré sans écraser l'image */
-            .video-container iframe, .video-container div {
-                width: 177.77% !important; /* 16/9 * 100% */
-                left: -38.88% !important; /* Recentrage parfait */
-            }
-
             .action-row { flex-direction: column; align-items: stretch; }
             .range-box, .btn { width: 100%; }
         }
@@ -278,7 +224,7 @@
     <!-- VUE 1 : MÉMORISATION -->
     <div id="memorization-view" class="container">
         
-        <!-- Écrans "Live Insta" sur Mobile -->
+        <!-- Écrans empilés (Live Insta) mais STRICTEMENT en 16:9 -->
         <div class="players-grid">
             <div class="player-box">
                 <div class="player-title">👤 1. Récitation du Sheikh</div>
@@ -372,7 +318,7 @@
             const html = document.documentElement;
             const btn = document.getElementById('themeBtn');
             if (html.getAttribute('data-theme') === 'light') {
-                html.setAttribute('data-theme', 'dark'); btn.innerHTML = '☀️️ Mode Clair';
+                html.setAttribute('data-theme', 'dark'); btn.innerHTML = '☀ Mode Clair';
             } else {
                 html.setAttribute('data-theme', 'light'); btn.innerHTML = '🌙 Mode Sombre';
             }
