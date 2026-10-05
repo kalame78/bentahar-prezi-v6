@@ -115,7 +115,7 @@
         .player-title { font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         
         .video-container {
-            position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 strict */
+            position: relative; width: 100%; padding-bottom: 56.25%; 
             background: #000; border-radius: 10px; overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); pointer-events: none; 
         }
@@ -153,7 +153,6 @@
         /* 📱 MOBILE : ÉLARGISSEMENT MAXIMAL         */
         /* ========================================= */
         @media (max-width: 768px) {
-            /* On réduit les marges globales pour donner tout l'espace aux vidéos */
             body { padding: 10px; } 
             .container { padding: 15px 10px; }
 
@@ -162,9 +161,7 @@
             
             .players-grid { 
                 display: flex; flex-direction: column; gap: 2px; background: #000;
-                padding: 2px; /* Cadre plus fin */
-                border-radius: 12px;
-                margin-bottom: 15px;
+                padding: 2px; border-radius: 12px; margin-bottom: 15px;
             }
             .player-title { display: none; }
             
@@ -189,7 +186,7 @@
         <select id="surahSelect" onchange="changeSurah(); toggleMenu();"></select>
         
         <div style="margin-top: 20px; font-size: 0.9em; color: var(--text-muted);">
-            Sélectionne la sourate de ton choix. L'interface se mettra à jour automatiquement.
+            Sélectionne la sourate de ton choix. L'interface se mettra à jour automatiquement avec les bonnes vidéos et les bons versets.
         </div>
     </div>
 
@@ -232,7 +229,7 @@
                 <select id="endVerseSelect"></select>
                 <button class="btn btn-range" onclick="playRange()">🔄 Boucler</button>
             </div>
-            <button class="btn btn-play-all" onclick="playWholeSurah()">▶️️ Lire tout</button>
+            <button class="btn btn-play-all" onclick="playWholeSurah()">▶ Lire tout</button>
             <button class="btn btn-stop" onclick="stopLoops()">⏹️ Arrêter</button>
         </div>
 
@@ -248,7 +245,7 @@
             <p>Fais défiler la carte mentale à ton rythme.</p>
         </div>
         <div class="prezi-wrapper">
-            <iframe src="https://prezi.com/p/embed/kaZIGlMTbDV8kXgTAJTs/" id="iframe_container" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" allow="autoplay; fullscreen"></iframe>
+            <iframe id="iframe_container" src="" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" allow="autoplay; fullscreen"></iframe>
         </div>
     </div>
 
@@ -282,13 +279,27 @@
             }
         }
 
+        // =========================================
+        // 📚 BASE DE DONNÉES DES SOURATES
+        // =========================================
         const databaseSourates = [
             {
-                id: "al-mutaffifin", nom: "Sourate 83 - Al-Mutaffifin",
+                id: "al-mutaffifin", 
+                nom: "Sourate 83 - Al-Mutaffifin",
                 sheikhSrc: "2xieYdQn-eU",
                 sheikhMarks: [0, 13, 18.3, 26.9, 34.4, 44.6, 48.2, 56.2, 66.5, 72.7, 77.5, 84.2, 91.1, 101, 111.5, 121.9, 132.7, 140.3, 151.1, 161.2, 168, 172.7, 178, 184.6, 190.8, 198, 204.4, 215.2, 220.7, 227.5, 238.5, 244.8, 256, 270.2, 277.4, 285.7, 292.2, 301.4],
                 preziSrc: "QABnLZl-f1Y",
-                preziMarks: [0, 12.6, 17.9, 26.7, 34.1, 44.6, 48.2, 56.2, 66.5, 72.7, 77.5, 84.2, 91.1, 101, 111.5, 121.9, 132.7, 140.3, 151.1, 161.2, 168, 172.7, 178, 184.6, 190.8, 198, 204.4, 215.2, 220.7, 227.5, 238.5, 244.8, 256, 270.2, 277.4, 285.7, 292.2, 301.4]
+                preziMarks: [0, 12.6, 17.9, 26.7, 34.1, 44.6, 48.2, 56.2, 66.5, 72.7, 77.5, 84.2, 91.1, 101, 111.5, 121.9, 132.7, 140.3, 151.1, 161.2, 168, 172.7, 178, 184.6, 190.8, 198, 204.4, 215.2, 220.7, 227.5, 238.5, 244.8, 256, 270.2, 277.4, 285.7, 292.2, 301.4],
+                preziEmbed: "https://prezi.com/p/embed/kaZIGlMTbDV8kXgTAJTs/"
+            },
+            {
+                id: "at-tariq", 
+                nom: "Sourate 86 - At-TariQ",
+                sheikhSrc: "BfWLZtvSxCM",
+                sheikhMarks: [0, 14.5, 19.3, 24.7, 28.7, 36.7, 44.4, 51.1, 58.8, 64.7, 69.7, 77.5, 82.7, 86.9, 92.4, 95.8, 101.6, 105, 113.3],
+                preziSrc: "WmijV-clhXY",
+                preziMarks: [0, 14.3, 19.2, 24.7, 28.6, 36.6, 44.2, 51.1, 58.7, 64.7, 69.6, 77.3, 82.8, 86.9, 92.4, 95.8, 101.5, 105.1, 112.6],
+                preziEmbed: "https://prezi.com/p/embed/kaZIGlMTbDV8kXgTAJTs/" 
             }
         ];
 
@@ -313,15 +324,22 @@
                 const opt = document.createElement('option');
                 opt.value = idx; opt.innerText = surah.nom; select.appendChild(opt);
             });
+            
             generateVerseUI();
+            document.getElementById('iframe_container').src = databaseSourates[0].preziEmbed;
         }
 
         function changeSurah() {
             currentSurahIndex = parseInt(document.getElementById('surahSelect').value);
-            stopLoops(); generateVerseUI();
+            stopLoops(); 
+            generateVerseUI();
+            
+            const currentSurah = databaseSourates[currentSurahIndex];
+            document.getElementById('iframe_container').src = currentSurah.preziEmbed;
+
             if (apiLoaded) {
-                playerSheikh.loadVideoById(databaseSourates[currentSurahIndex].sheikhSrc);
-                playerPrezi.loadVideoById(databaseSourates[currentSurahIndex].preziSrc);
+                playerSheikh.loadVideoById(currentSurah.sheikhSrc);
+                playerPrezi.loadVideoById(currentSurah.preziSrc);
             }
         }
 
@@ -408,7 +426,7 @@
             if (playerSheikh && typeof playerSheikh.pauseVideo === 'function') playerSheikh.pauseVideo();
             if (playerPrezi && typeof playerPrezi.pauseVideo === 'function') playerPrezi.pauseVideo();
             document.querySelectorAll('.verse-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('status-info').innerHTML = "⏹️️ Lecture arrêtée.";
+            document.getElementById('status-info').innerHTML = "⏹ Lecture arrêtée.";
         }
     </script>
 </body>
