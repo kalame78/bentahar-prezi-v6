@@ -186,7 +186,7 @@
         <select id="surahSelect" onchange="changeSurah(); toggleMenu();"></select>
         
         <div style="margin-top: 20px; font-size: 0.9em; color: var(--text-muted);">
-            Sélectionne la sourate de ton choix. L'interface se mettra à jour automatiquement avec les bonnes vidéos et les bons versets.
+            Sélectionne la sourate de ton choix. L'interface se mettra à jour automatiquement.
         </div>
     </div>
 
@@ -346,10 +346,18 @@
         function onYouTubeIframeAPIReady() {
             apiLoaded = true;
             const currentSurah = databaseSourates[currentSurahIndex];
+            
+            // 🚨 NOUVEAU : On utilise youtube-nocookie.com pour limiter les pubs !
             const vars = { 'playsinline': 1, 'rel': 0, 'controls': 0, 'modestbranding': 1, 'disablekb': 1, 'iv_load_policy': 3 };
 
-            playerSheikh = new YT.Player('player-sheikh', { height: '100%', width: '100%', videoId: currentSurah.sheikhSrc, playerVars: vars, events: { 'onReady': checkReady } });
-            playerPrezi = new YT.Player('player-prezi', { height: '100%', width: '100%', videoId: currentSurah.preziSrc, playerVars: vars, events: { 'onReady': checkReady } });
+            playerSheikh = new YT.Player('player-sheikh', { 
+                host: 'https://www.youtube-nocookie.com',
+                height: '100%', width: '100%', videoId: currentSurah.sheikhSrc, playerVars: vars, events: { 'onReady': checkReady } 
+            });
+            playerPrezi = new YT.Player('player-prezi', { 
+                host: 'https://www.youtube-nocookie.com',
+                height: '100%', width: '100%', videoId: currentSurah.preziSrc, playerVars: vars, events: { 'onReady': checkReady } 
+            });
         }
 
         function checkReady() { document.getElementById('status-info').innerHTML = "✅ Lecteurs prêts ! Lance un verset, une plage, ou toute la sourate."; }
