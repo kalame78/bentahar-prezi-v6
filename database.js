@@ -28,8 +28,17 @@ const databaseSourates = [
         nom: "Sourate 81 - At-Takwir",
         sheikhSrc: "i_MYg0Q8jCY",
         sheikhMarks: [0, 13.3, 17.4, 22.6, 26.8, 30.8, 34.8, 39.1, 44, 48.7, 54.4, 58, 62.7, 67, 72.3, 79, 84.6, 88.8, 92.7, 96.8, 104, 110.4, 116.1, 122.2, 128.4, 134, 140.5, 144.4, 150.7, 160.6, 175.4],
-        preziSrc: "i_MYg0Q8jCY", // En attendant le Prezi
+        preziSrc: "i_MYg0Q8jCY",
         preziMarks: [0, 13.3, 17.4, 22.6, 26.8, 30.8, 34.8, 39.1, 44, 48.7, 54.4, 58, 62.7, 67, 72.3, 79, 84.6, 88.8, 92.7, 96.8, 104, 110.4, 116.1, 122.2, 128.4, 134, 140.5, 144.4, 150.7, 160.6, 175.4],
         preziEmbed: "https://prezi.com/p/embed/kaZIGlMTbDV8kXgTAJTs/" 
+    },
+    {
+        id: "al-ghashiya", 
+        nom: "Sourate 88 - Al-Ghashiya",
+        sheikhSrc: "Pzlvo6Abc3Y",
+        sheikhMarks: [0, 13.4, 18.7, 24.7, 29.2, 33.7, 38.6, 46, 53.3, 59.9, 63.5, 68.6, 73.5, 78.6, 83.9, 89.2, 93.6, 98, 105.3, 112, 116.7, 121.1, 129.6, 134.8, 140.2, 146.6, 152.6, 159.7],
+        preziSrc: "Pzlvo6Abc3Y", // En attendant le vrai Prezi
+        preziMarks: [0, 13.4, 18.7, 24.7, 29.2, 33.7, 38.6, 46, 53.3, 59.9, 63.5, 68.6, 73.5, 78.6, 83.9, 89.2, 93.6, 98, 105.3, 112, 116.7, 121.1, 129.6, 134.8, 140.2, 146.6, 152.6, 159.7],
+        preziEmbed: "https://prezi.com/p/embed/kaZIGlMTbDV8kXgTAJTs/"
     }
 ];
